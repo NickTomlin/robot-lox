@@ -1,0 +1,28 @@
+class Dog {
+    init(name) {
+        this.name = name;
+    }
+
+    bark() {
+        print this.name + " says: Woof!";
+    }
+
+    greet(other) {
+        print this.name + " meets " + other.name;
+    }
+}
+
+var d = Dog("Rex");
+d.bark();
+
+var d2 = Dog("Buddy");
+d2.bark();
+d.greet(d2);
+
+// Fields
+d.age = 3;
+print d.age;
+
+// Class name
+print Dog;
+print d;

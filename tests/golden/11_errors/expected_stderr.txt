@@ -1,0 +1,2 @@
+Undefined variable 'undefined_variable'.
+[line 1] in script

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(make:*)",
+      "Bash(./build/lox)",
+      "Bash(bash tests/run_tests.sh)",
+      "Bash(./build/lox tests/golden/02_arithmetic/input.lox)",
+      "Bash(git add:*)"
+    ]
+  }
+}

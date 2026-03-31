@@ -1,0 +1,8 @@
+Generic makes a sound.
+I am Generic
+Rex barks.
+I am Rex
+Whiskers meows.
+K9 barks.
+Badge: 007
+I am K9

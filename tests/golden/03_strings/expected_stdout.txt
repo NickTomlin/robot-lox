@@ -1,0 +1,6 @@
+hello world
+true
+false
+true
+test
+test!

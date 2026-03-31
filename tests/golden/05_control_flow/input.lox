@@ -1,0 +1,22 @@
+if (true) print "yes";
+
+if (false) print "no"; else print "yes2";
+
+var x = 5;
+if (x > 3) {
+    print "big";
+} else {
+    print "small";
+}
+
+// Truthiness: nil and false are falsy, everything else truthy
+if (nil) print "nil truthy"; else print "nil falsy";
+if (0)   print "zero truthy";
+if ("")  print "empty string truthy";
+
+// Logical operators
+print true and false;
+print true and true;
+print false or true;
+print false or false;
+print nil or "default";

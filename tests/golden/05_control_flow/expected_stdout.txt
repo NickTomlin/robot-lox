@@ -1,0 +1,11 @@
+yes
+yes2
+big
+nil falsy
+zero truthy
+empty string truthy
+false
+true
+true
+false
+default

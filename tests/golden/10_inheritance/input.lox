@@ -1,0 +1,52 @@
+class Animal {
+    init(name) {
+        this.name = name;
+    }
+
+    speak() {
+        print this.name + " makes a sound.";
+    }
+
+    describe() {
+        print "I am " + this.name;
+    }
+}
+
+class Dog < Animal {
+    speak() {
+        print this.name + " barks.";
+    }
+}
+
+class Cat < Animal {
+    speak() {
+        print this.name + " meows.";
+    }
+}
+
+class PoliceDog < Dog {
+    init(name, badge) {
+        super.init(name);
+        this.badge = badge;
+    }
+
+    speak() {
+        super.speak();
+        print "Badge: " + this.badge;
+    }
+}
+
+var a = Animal("Generic");
+a.speak();
+a.describe();
+
+var d = Dog("Rex");
+d.speak();
+d.describe();
+
+var c = Cat("Whiskers");
+c.speak();
+
+var pd = PoliceDog("K9", "007");
+pd.speak();
+pd.describe();

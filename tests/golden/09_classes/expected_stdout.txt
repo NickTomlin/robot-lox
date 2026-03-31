@@ -1,0 +1,6 @@
+Rex says: Woof!
+Buddy says: Woof!
+Rex meets Buddy
+3
+Dog
+Dog instance
