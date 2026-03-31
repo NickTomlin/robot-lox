@@ -119,23 +119,22 @@ ObjBoundMethod *obj_bound_method_new(Value receiver, ObjClosure *method) {
     return bm;
 }
 
+static void print_fn_name(ObjFunction *fn, const char *unnamed) {
+    if (fn->name == NULL) printf("%s", unnamed);
+    else printf("<fn %s>", fn->name->chars);
+}
+
 void obj_print(Obj *obj) {
     switch (obj->type) {
         case OBJ_STRING:
             printf("%s", ((ObjString *)obj)->chars);
             break;
-        case OBJ_FUNCTION: {
-            ObjFunction *fn = (ObjFunction *)obj;
-            if (fn->name == NULL) printf("<script>");
-            else printf("<fn %s>", fn->name->chars);
+        case OBJ_FUNCTION:
+            print_fn_name((ObjFunction *)obj, "<script>");
             break;
-        }
-        case OBJ_CLOSURE: {
-            ObjFunction *fn = ((ObjClosure *)obj)->function;
-            if (fn->name == NULL) printf("<script>");
-            else printf("<fn %s>", fn->name->chars);
+        case OBJ_CLOSURE:
+            print_fn_name(((ObjClosure *)obj)->function, "<script>");
             break;
-        }
         case OBJ_UPVALUE:
             printf("<upvalue>");
             break;
@@ -148,12 +147,9 @@ void obj_print(Obj *obj) {
         case OBJ_INSTANCE:
             printf("%s instance", ((ObjInstance *)obj)->klass->name->chars);
             break;
-        case OBJ_BOUND_METHOD: {
-            ObjFunction *fn = ((ObjBoundMethod *)obj)->method->function;
-            if (fn->name == NULL) printf("<method>");
-            else printf("<fn %s>", fn->name->chars);
+        case OBJ_BOUND_METHOD:
+            print_fn_name(((ObjBoundMethod *)obj)->method->function, "<method>");
             break;
-        }
     }
 }
 

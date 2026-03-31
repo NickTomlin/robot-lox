@@ -20,7 +20,6 @@ void gc_mark_object(Obj *obj) {
 
     obj->is_marked = true;
 
-    // Add to gray worklist
     if (vm.gray_count >= vm.gray_capacity) {
         vm.gray_capacity = vm.gray_capacity < 8 ? 8 : vm.gray_capacity * 2;
         vm.gray_stack = (Obj **)realloc(vm.gray_stack,
@@ -32,6 +31,16 @@ void gc_mark_object(Obj *obj) {
 
 void gc_mark_value(Value v) {
     if (IS_OBJ(v)) gc_mark_object(AS_OBJ(v));
+}
+
+static void gc_mark_table(Table *t) {
+    for (int i = 0; i < t->capacity; i++) {
+        Entry *e = &t->entries[i];
+        if (e->key != NULL) {
+            gc_mark_object((Obj *)e->key);
+            gc_mark_value(e->value);
+        }
+    }
 }
 
 static void mark_value_array(ValueArray *arr) {
@@ -64,25 +73,13 @@ static void blacken_object(Obj *obj) {
         case OBJ_CLASS: {
             ObjClass *klass = (ObjClass *)obj;
             gc_mark_object((Obj *)klass->name);
-            for (int i = 0; i < klass->methods.capacity; i++) {
-                Entry *e = &klass->methods.entries[i];
-                if (e->key != NULL) {
-                    gc_mark_object((Obj *)e->key);
-                    gc_mark_value(e->value);
-                }
-            }
+            gc_mark_table(&klass->methods);
             break;
         }
         case OBJ_INSTANCE: {
             ObjInstance *inst = (ObjInstance *)obj;
             gc_mark_object((Obj *)inst->klass);
-            for (int i = 0; i < inst->fields.capacity; i++) {
-                Entry *e = &inst->fields.entries[i];
-                if (e->key != NULL) {
-                    gc_mark_object((Obj *)e->key);
-                    gc_mark_value(e->value);
-                }
-            }
+            gc_mark_table(&inst->fields);
             break;
         }
         case OBJ_BOUND_METHOD: {
@@ -111,18 +108,8 @@ static void mark_roots(void) {
     for (ObjUpvalue *uv = vm.open_upvalues; uv != NULL; uv = uv->next)
         gc_mark_object((Obj *)uv);
 
-    // Globals
-    for (int i = 0; i < vm.globals.capacity; i++) {
-        Entry *e = &vm.globals.entries[i];
-        if (e->key != NULL) {
-            gc_mark_object((Obj *)e->key);
-            gc_mark_value(e->value);
-        }
-    }
-
+    gc_mark_table(&vm.globals);
     gc_mark_object((Obj *)vm.init_string);
-
-    // Compiler roots (in-progress functions)
     compiler_mark_roots();
 }
 
@@ -156,12 +143,10 @@ static void sweep(void) {
 }
 
 static void remove_white_strings(void) {
-    // Weak references — remove interned strings that weren't marked
     for (int i = 0; i < vm.strings.capacity; i++) {
         Entry *e = &vm.strings.entries[i];
-        if (e->key != NULL && !e->key->obj.is_marked) {
+        if (e->key != NULL && !e->key->obj.is_marked)
             table_delete(&vm.strings, e->key);
-        }
     }
 }
 

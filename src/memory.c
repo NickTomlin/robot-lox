@@ -6,11 +6,7 @@
 
 void *reallocate(void *ptr, size_t old_size, size_t new_size) {
     vm.bytes_allocated += new_size;
-    if (new_size < old_size) {
-        vm.bytes_allocated -= old_size;
-    } else {
-        vm.bytes_allocated -= old_size;
-    }
+    vm.bytes_allocated -= old_size;
 
 #if DEBUG_STRESS_GC
     if (new_size > 0) gc_collect();

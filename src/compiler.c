@@ -384,7 +384,6 @@ static void number(bool can_assign) {
 
 static void string(bool can_assign) {
     (void)can_assign;
-    // +1 / -2 to skip the surrounding quotes
     emit_constant(OBJ_VAL(obj_string_copy(parser.previous.start + 1,
                                            parser.previous.length - 2)));
 }
@@ -408,17 +407,16 @@ static void super_(bool can_assign) {
     consume(TOKEN_IDENTIFIER, "Expect superclass method name.");
     uint8_t name = identifier_constant(&parser.previous);
 
-    Token this_tok = {TOKEN_THIS, "this", 4, 0};
+    Token this_tok  = {TOKEN_THIS,  "this",  4, 0};
+    Token super_tok = {TOKEN_SUPER, "super", 5, 0};
     named_variable(this_tok, false);
 
     if (match_tok(TOKEN_LEFT_PAREN)) {
         uint8_t argc = argument_list();
-        Token super_tok = {TOKEN_SUPER, "super", 5, 0};
         named_variable(super_tok, false);
         emit_bytes(OP_SUPER_INVOKE, name);
         emit_byte(argc);
     } else {
-        Token super_tok = {TOKEN_SUPER, "super", 5, 0};
         named_variable(super_tok, false);
         emit_bytes(OP_GET_SUPER, name);
     }
@@ -689,20 +687,10 @@ static void for_statement(void) {
     if (match_tok(TOKEN_SEMICOLON)) {
         // nothing
     } else if (match_tok(TOKEN_VAR)) {
-        // var decl inside for
-        consume(TOKEN_IDENTIFIER, "Expect variable name.");
-        uint8_t global = 0;
-        declare_variable();
+        uint8_t global = parse_variable("Expect variable name.");
         if (match_tok(TOKEN_EQUAL)) expression(); else emit_byte(OP_NIL);
         consume(TOKEN_SEMICOLON, "Expect ';' after loop initializer.");
-        if (current->scope_depth > 0) {
-            mark_initialized();
-            global = 0;
-        } else {
-            global = identifier_constant(&parser.previous);
-            emit_bytes(OP_DEFINE_GLOBAL, global);
-        }
-        (void)global;
+        define_variable(global);
     } else {
         expression_statement();
     }

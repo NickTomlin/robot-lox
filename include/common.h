@@ -15,3 +15,5 @@
 #define DEBUG_LOG_GC      0
 
 #define UINT8_COUNT (UINT8_MAX + 1)
+
+#define GROW_CAPACITY(old) ((old) < 8 ? 8 : (old) * 2)

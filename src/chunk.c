@@ -19,7 +19,7 @@ void chunk_free(Chunk *chunk) {
 void chunk_write(Chunk *chunk, uint8_t byte, int line) {
     if (chunk->count >= chunk->capacity) {
         int old       = chunk->capacity;
-        chunk->capacity = old < 8 ? 8 : old * 2;
+        chunk->capacity = GROW_CAPACITY(old);
         chunk->code  = (uint8_t *)reallocate(chunk->code,
                                               (size_t)old * sizeof(uint8_t),
                                               (size_t)chunk->capacity * sizeof(uint8_t));

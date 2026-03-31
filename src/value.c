@@ -11,7 +11,7 @@ void value_array_init(ValueArray *arr) {
 void value_array_write(ValueArray *arr, Value v) {
     if (arr->count >= arr->capacity) {
         int old = arr->capacity;
-        arr->capacity = old < 8 ? 8 : old * 2;
+        arr->capacity = GROW_CAPACITY(old);
         arr->values   = (Value *)reallocate(arr->values,
                                             (size_t)old * sizeof(Value),
                                             (size_t)arr->capacity * sizeof(Value));
