@@ -1,6 +1,8 @@
 # robot-lox
 
-A bytecode VM interpreter for the [Lox language](https://craftinginterpreters.com). Single-pass compiler, mark-and-sweep GC, no external dependencies.
+An entirely robot written bytecode VM interpreter for the [Lox language](https://craftinginterpreters.com). 
+
+This was produced to show that all the artisanal hand-typing I did in [my edition](https://github.com/NickTomlin/clox) and most human endeavour after the year of our Claude 2026 is worthless. Enjoy.
 
 ## The language
 
